@@ -35,6 +35,17 @@ const Home: React.FC = () => {
   const [isMetronomePlaying, setIsMetronomePlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [musicName, setMusicName] = useState<string | null>(null);
+  const [padVolume, setPadVolume] = useState<number>(0); // dB
+  const [clickVolume, setClickVolume] = useState<number>(0); // dB
+  // Atualiza volume do PAD
+  useEffect(() => {
+    audioService.setPadVolume(padVolume);
+  }, [padVolume]);
+
+  // Atualiza volume do click
+  useEffect(() => {
+    audioService.setClickVolume(clickVolume);
+  }, [clickVolume]);
 
   const location = useLocation<any>();
   const history = useHistory();
@@ -220,6 +231,28 @@ const Home: React.FC = () => {
                 max={220}
                 value={bpmBase}
                 onIonChange={e => handleBpmChange(e.detail.value as number)}
+                pin={true}
+              />
+            </IonItem>
+            <IonItem>
+              <IonLabel>Volume PAD: {padVolume} dB</IonLabel>
+              <IonRange
+                min={-40}
+                max={6}
+                value={padVolume}
+                step={1}
+                onIonChange={e => setPadVolume(Number(e.detail.value))}
+                pin={true}
+              />
+            </IonItem>
+            <IonItem>
+              <IonLabel>Volume Click: {clickVolume} dB</IonLabel>
+              <IonRange
+                min={-40}
+                max={6}
+                value={clickVolume}
+                step={1}
+                onIonChange={e => setClickVolume(Number(e.detail.value))}
                 pin={true}
               />
             </IonItem>

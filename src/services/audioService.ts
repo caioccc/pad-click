@@ -1,11 +1,13 @@
-import * as Tone from 'tone';
-import { Tone as ToneType, TONE_TO_FILE } from '../types';
+import * as Tone from "tone";
+import { Tone as ToneType, TONE_TO_FILE } from "../types";
 
 class AudioService {
   private padPlayer: Tone.Player | null = null;
   private padPanner: Tone.Panner | null = null;
+  private padVolume: Tone.Volume | null = null;
   private clickSynth: Tone.Synth | null = null;
   private clickPanner: Tone.Panner | null = null;
+  private clickVolume: Tone.Volume | null = null;
   private currentTone: ToneType | null = null;
   private isInitialized = false;
 
@@ -14,22 +16,37 @@ class AudioService {
 
     await Tone.start();
 
-    // Setup PAD (canal esquerdo)
-    this.padPanner = new Tone.Panner(-1).toDestination();
+    // Setup PAD (canal esquerdo) - criar apenas uma vez
+    if (!this.padVolume) {
+      this.padVolume = new Tone.Volume(0); // 0 dB padrão
+    }
+    if (!this.padPanner) {
+      this.padPanner = new Tone.Panner(-1);
+      this.padPanner.toDestination();
+    }
 
-    // Setup Click (canal direito)
-    this.clickPanner = new Tone.Panner(1);
-    this.clickPanner.pan.value = 1; // garantir canal direito
-    this.clickPanner.toDestination();
-    this.clickSynth = new Tone.Synth({
-      oscillator: { type: 'square' },
-      envelope: {
-        attack: 0.001,
-        decay: 0.01,
-        sustain: 0,
-        release: 0.01
-      }
-    }).connect(this.clickPanner);
+    // Setup Click (canal direito) - criar apenas uma vez
+    if (!this.clickVolume) {
+      this.clickVolume = new Tone.Volume(0); // 0 dB padrão
+    }
+    if (!this.clickPanner) {
+      this.clickPanner = new Tone.Panner(1);
+      this.clickPanner.toDestination();
+      this.clickPanner.pan.value = 1; // garantir canal direito
+    }
+    if (!this.clickSynth) {
+      this.clickSynth = new Tone.Synth({
+        oscillator: { type: "square" },
+        envelope: {
+          attack: 0.001,
+          decay: 0.01,
+          sustain: 0,
+          release: 0.01,
+        },
+      });
+      this.clickSynth.connect(this.clickVolume!);
+      this.clickVolume!.connect(this.clickPanner!);
+    }
 
     this.isInitialized = true;
   }
@@ -54,14 +71,32 @@ class AudioService {
       url: audioPath,
       loop: true,
       fadeIn: 0.1,
-      fadeOut: 0.1
-    }).connect(this.padPanner!);
+      fadeOut: 0.1,
+    });
+    // Conectar sempre ao volume e panner já existentes
+    this.padPlayer.connect(this.padVolume!);
+    this.padVolume!.connect(this.padPanner!);
 
     this.currentTone = tone;
 
     return new Promise<void>((resolve, reject) => {
-      this.padPlayer!.load(audioPath).then(() => resolve()).catch(reject);
+      this.padPlayer!.load(audioPath)
+        .then(() => resolve())
+        .catch(reject);
     });
+  }
+
+  setPadVolume(volume: number) {
+    // volume em dB, ex: 0 = normal, -20 = baixo, +6 = alto
+    if (this.padVolume) {
+      this.padVolume.volume.value = volume;
+    }
+  }
+
+  setClickVolume(volume: number) {
+    if (this.clickVolume) {
+      this.clickVolume.volume.value = volume;
+    }
   }
 
   async playPad() {
@@ -91,8 +126,8 @@ class AudioService {
     }
 
     this.metronomeEvent = Tone.Transport.scheduleRepeat((time) => {
-      this.clickSynth?.triggerAttackRelease('C6', '16n', time);
-    }, '4n');
+      this.clickSynth?.triggerAttackRelease("C6", "16n", time);
+    }, "4n");
 
     Tone.Transport.start();
   }
@@ -111,11 +146,11 @@ class AudioService {
   }
 
   isPadPlaying(): boolean {
-    return this.padPlayer?.state === 'started';
+    return this.padPlayer?.state === "started";
   }
 
   isMetronomePlaying(): boolean {
-    return Tone.Transport.state === 'started';
+    return Tone.Transport.state === "started";
   }
 
   dispose() {
@@ -129,8 +164,14 @@ class AudioService {
     if (this.padPanner) {
       this.padPanner.dispose();
     }
+    if (this.padVolume) {
+      this.padVolume.dispose();
+    }
     if (this.clickPanner) {
       this.clickPanner.dispose();
+    }
+    if (this.clickVolume) {
+      this.clickVolume.dispose();
     }
   }
 }
