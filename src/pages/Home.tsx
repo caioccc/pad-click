@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
   IonButton,
-  IonSelect,
-  IonSelectOption,
-  IonRange,
-  IonLabel,
-  IonItem,
+  IonButtons,
   IonCard,
   IonCardContent,
-  IonGrid,
-  IonRow,
   IonCol,
-  IonButtons,
+  IonContent,
+  IonGrid,
+  IonHeader,
   IonIcon,
+  IonItem,
+  IonLabel,
+  IonPage,
+  IonRange,
+  IonRow,
   IonSegment,
-  IonSegmentButton
+  IonSegmentButton,
+  IonSelect,
+  IonSelectOption,
+  IonTitle,
+  IonToolbar
 } from '@ionic/react';
-import { list, playCircle, pauseCircle, stopCircle } from 'ionicons/icons';
-import { useLocation, useHistory } from 'react-router-dom';
+import { list, pauseCircle, playCircle, stopCircle } from 'ionicons/icons';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { audioService } from '../services/audioService';
 import { Tone, TONES } from '../types';
 
@@ -192,7 +192,14 @@ const Home: React.FC = () => {
 
             <IonItem>
               <IonLabel>Velocidade</IonLabel>
-              <IonSegment value={bpmMultiplier.toString()} onIonChange={e => handleBpmMultiplierChange(e.detail.value)}>
+              <IonSegment
+                value={bpmMultiplier.toString()}
+                onIonChange={e => {
+                  if (typeof e.detail.value === 'string') {
+                    handleBpmMultiplierChange(e.detail.value);
+                  }
+                }}
+              >
                 <IonSegmentButton value="0.5">
                   <IonLabel>0.5x</IonLabel>
                 </IonSegmentButton>

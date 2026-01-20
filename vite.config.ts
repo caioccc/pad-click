@@ -10,6 +10,9 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  esbuild: {
+    logLevel: 'silent',
+  },
   test: {
     globals: true,
     environment: 'jsdom',

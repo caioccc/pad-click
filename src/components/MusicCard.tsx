@@ -11,7 +11,7 @@ import {
   IonCol
 } from '@ionic/react';
 import { play, create, trash } from 'ionicons/icons';
-import { Music } from '../ttt/src/types';
+import { Music } from '../types';
 
 interface MusicCardProps {
   music: Music;
