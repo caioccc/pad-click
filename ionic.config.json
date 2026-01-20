@@ -1,0 +1,7 @@
+{
+  "name": "Pad&Click",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
