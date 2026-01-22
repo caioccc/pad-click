@@ -153,6 +153,14 @@ class AudioService {
     return Tone.Transport.state === "started";
   }
 
+  playMusic(music: { tone: ToneType; bpm: number }) {
+    this.loadPad(music.tone).then(() => {
+      this.setBPM(music.bpm);
+      this.playPad();
+      this.playMetronome(music.bpm);
+    });
+  }
+
   dispose() {
     this.stopAll();
     if (this.padPlayer) {

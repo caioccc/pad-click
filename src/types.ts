@@ -1,3 +1,8 @@
+export interface Setlist {
+  id: string;
+  name: string;
+  musics: Music[];
+}
 export type Tone = 'C' | 'C#' | 'D' | 'D#' | 'E' | 'F' | 'F#' | 'G' | 'G#' | 'A' | 'A#' | 'B';
 
 export interface Music {

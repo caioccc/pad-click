@@ -1,24 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useIonViewWillEnter } from '@ionic/react';
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonButton,
-  IonList,
-  IonButtons,
-  IonIcon,
-  IonFab,
-  IonFabButton,
-  IonAlert
+  IonAlert, IonButton, IonButtons, IonContent, IonFab,
+  IonFabButton, IonHeader, IonIcon, IonList, IonPage, IonTitle, IonToolbar, useIonViewWillEnter
 } from '@ionic/react';
-import { arrowBack, add } from 'ionicons/icons';
+import { add } from 'ionicons/icons';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import MusicCard from '../components/MusicCard';
 import { storageService } from '../services/storageService';
 import { Music } from '../types';
-import MusicCard from '../components/MusicCard';
 
 const MusicList: React.FC = () => {
   const [musics, setMusics] = useState<Music[]>([]);
@@ -69,6 +58,11 @@ const MusicList: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Minhas Músicas</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={() => history.push('/setlist')}>
+              Criar Setlist
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 

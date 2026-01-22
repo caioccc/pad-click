@@ -43,6 +43,8 @@ import MusicForm from './pages/MusicForm';
 import MusicList from './pages/MusicList';
 import { useEffect } from 'react';
 import { storageService } from './services/storageService';
+import SetlistSelector from './pages/SetlistSelector';
+import SetlistPlayer from './pages/SetlistPlayer';
 
 setupIonicReact();
 
@@ -59,6 +61,8 @@ const App: React.FC = () => {
             <Route exact path="/" component={MusicList} />
             <Route exact path="/home" component={Home} />
             <Route exact path="/musics" component={MusicList} />
+            <Route exact path="/setlist" component={SetlistSelector} />
+            <Route exact path="/setlist-player" component={SetlistPlayer} />
           <Route exact path="/music-form/:id" component={MusicForm} />
           <Route exact path="/player" component={Home} />
         </IonRouterOutlet>
