@@ -38,7 +38,7 @@ const [clickVolume, setClickVolume] = useState(-10);
 
 // No JSX
 <IonItem>
-  <IonLabel>Volume PAD: {padVolume} dB</IonLabel>
+  <IonLabel>Volume PAD (L): {padVolume} dB</IonLabel>
 </IonItem>
 <IonItem>
   <IonRange

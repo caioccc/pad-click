@@ -37,7 +37,7 @@ const MusicList: React.FC = () => {
   };
 
   const handlePlay = (music: Music) => {
-    history.push('/', {
+    history.push('/player', {
       music: {
         tone: music.tone,
         bpm: music.bpm,
@@ -68,11 +68,6 @@ const MusicList: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton onClick={() => history.push('/')}>
-              <IonIcon icon={arrowBack} />
-            </IonButton>
-          </IonButtons>
           <IonTitle>Minhas Músicas</IonTitle>
         </IonToolbar>
       </IonHeader>

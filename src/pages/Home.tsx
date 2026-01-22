@@ -3,16 +3,14 @@ import {
   IonButtons,
   IonCard,
   IonCardContent,
-  IonCol,
+  IonCardHeader,
   IonContent,
-  IonGrid,
   IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
   IonPage,
   IonRange,
-  IonRow,
   IonSegment,
   IonSegmentButton,
   IonSelect,
@@ -47,6 +45,7 @@ const Home: React.FC = () => {
     audioService.setClickVolume(clickVolume);
   }, [clickVolume]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const location = useLocation<any>();
   const history = useHistory();
 
@@ -167,25 +166,36 @@ const Home: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>PAD + Metrônomo</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={() => history.push('/musics')}>
-              <IonIcon icon={list} />
-            </IonButton>
+          <IonButtons slot="start">
+            {location.pathname === '/player' && (
+              <IonButton onClick={() => {
+                audioService.stopAll();
+                history.push('/musics');
+              }}>
+                <IonIcon icon={list} />
+              </IonButton>
+            )}
           </IonButtons>
+          <IonTitle>PAD + Metrônomo</IonTitle>
         </IonToolbar>
       </IonHeader>
 
       <IonContent className="ion-padding">
+        {/* Indicação da música */}
+        {musicName && (
+          <IonItem color="light" style={{ marginBottom: 12 }}>
+            <IonLabel style={{ fontWeight: 'bold', fontSize: '1.1em' }}>
+              Música: {musicName}
+            </IonLabel>
+          </IonItem>
+        )}
+
+        {/* Card PAD */}
         <IonCard>
+          <IonCardHeader>
+            <IonTitle>PAD</IonTitle>
+          </IonCardHeader>
           <IonCardContent>
-            {musicName && (
-              <IonItem color="light">
-                <IonLabel style={{ fontWeight: 'bold', fontSize: '1.1em' }}>
-                  {musicName}
-                </IonLabel>
-              </IonItem>
-            )}
             <IonItem>
               <IonLabel>Tom do PAD</IonLabel>
               <IonSelect
@@ -200,7 +210,36 @@ const Home: React.FC = () => {
                 ))}
               </IonSelect>
             </IonItem>
+            <IonItem>
+              <IonLabel>Volume PAD (L): {padVolume} dB</IonLabel>
+              <IonRange
+                min={-40}
+                max={6}
+                value={padVolume}
+                step={1}
+                onIonChange={e => setPadVolume(Number(e.detail.value))}
+                pin={true}
+              />
+            </IonItem>
+            <IonButton
+              expand="block"
+              onClick={togglePad}
+              disabled={isLoading}
+              color={isPadPlaying ? 'warning' : 'primary'}
+              style={{ marginTop: 12 }}
+            >
+              <IonIcon icon={isPadPlaying ? pauseCircle : playCircle} slot="start" />
+              {isPadPlaying ? 'Pausar' : 'Play'} PAD
+            </IonButton>
+          </IonCardContent>
+        </IonCard>
 
+        {/* Card CLICK */}
+        <IonCard>
+          <IonCardHeader>
+            <IonTitle>Click / Metrônomo</IonTitle>
+          </IonCardHeader>
+          <IonCardContent>
             <IonItem>
               <IonLabel>Velocidade</IonLabel>
               <IonSegment
@@ -235,18 +274,7 @@ const Home: React.FC = () => {
               />
             </IonItem>
             <IonItem>
-              <IonLabel>Volume PAD: {padVolume} dB</IonLabel>
-              <IonRange
-                min={-40}
-                max={6}
-                value={padVolume}
-                step={1}
-                onIonChange={e => setPadVolume(Number(e.detail.value))}
-                pin={true}
-              />
-            </IonItem>
-            <IonItem>
-              <IonLabel>Volume Click: {clickVolume} dB</IonLabel>
+              <IonLabel>Volume Click (R): {clickVolume} dB</IonLabel>
               <IonRange
                 min={-40}
                 max={6}
@@ -256,52 +284,29 @@ const Home: React.FC = () => {
                 pin={true}
               />
             </IonItem>
+            <IonButton
+              expand="block"
+              onClick={toggleMetronome}
+              color={isMetronomePlaying ? 'warning' : 'secondary'}
+              style={{ marginTop: 12 }}
+            >
+              <IonIcon icon={isMetronomePlaying ? pauseCircle : playCircle} slot="start" />
+              {isMetronomePlaying ? 'Pausar' : 'Play'} Metrônomo
+            </IonButton>
           </IonCardContent>
         </IonCard>
 
+        {/* Card STOP */}
         <IonCard>
           <IonCardContent>
-            <IonGrid>
-              <IonRow>
-                <IonCol>
-                  <IonButton
-                    expand="block"
-                    onClick={togglePad}
-                    disabled={isLoading}
-                    color={isPadPlaying ? 'warning' : 'primary'}
-                  >
-                    <IonIcon icon={isPadPlaying ? pauseCircle : playCircle} slot="start" />
-                    {isPadPlaying ? 'Pausar' : 'Play'} PAD
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-
-              <IonRow>
-                <IonCol>
-                  <IonButton
-                    expand="block"
-                    onClick={toggleMetronome}
-                    color={isMetronomePlaying ? 'warning' : 'secondary'}
-                  >
-                    <IonIcon icon={isMetronomePlaying ? pauseCircle : playCircle} slot="start" />
-                    {isMetronomePlaying ? 'Pausar' : 'Play'} Metrônomo
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-
-              <IonRow>
-                <IonCol>
-                  <IonButton
-                    expand="block"
-                    onClick={stopAll}
-                    color="danger"
-                  >
-                    <IonIcon icon={stopCircle} slot="start" />
-                    Stop Geral
-                  </IonButton>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
+            <IonButton
+              expand="block"
+              onClick={stopAll}
+              color="danger"
+            >
+              <IonIcon icon={stopCircle} slot="start" />
+              Stop Geral
+            </IonButton>
           </IonCardContent>
         </IonCard>
 

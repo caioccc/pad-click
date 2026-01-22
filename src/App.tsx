@@ -4,7 +4,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -56,9 +56,11 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/musics" component={MusicList} />
+            <Route exact path="/" component={MusicList} />
+            <Route exact path="/home" component={Home} />
+            <Route exact path="/musics" component={MusicList} />
           <Route exact path="/music-form/:id" component={MusicForm} />
+          <Route exact path="/player" component={Home} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
