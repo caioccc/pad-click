@@ -15,7 +15,7 @@ import { audioService } from '../services/audioService';
 
 
 
-const Home = () => {
+const Home: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const location = useLocation<any>();
   const history = useHistory();

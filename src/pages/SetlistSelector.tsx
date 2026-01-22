@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonCheckbox, IonButton, IonInput, IonButtons, IonIcon, IonLabel } from '@ionic/react';
+import { IonButton, IonButtons, IonCheckbox, IonContent, IonHeader, IonIcon, IonItem, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { arrowBack, listCircle } from 'ionicons/icons';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { storageService } from '../services/storageService';
 import { Music, Setlist } from '../types';
@@ -12,7 +12,6 @@ interface SetlistSelectorProps {
 const SetlistSelector: React.FC<SetlistSelectorProps> = ({ onSetlistCreated }) => {
   const [musics, setMusics] = useState<Music[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [setlistName, setSetlistName] = useState('');
 
   useEffect(() => {
     setMusics(storageService.getAllMusics());
@@ -27,10 +26,10 @@ const SetlistSelector: React.FC<SetlistSelectorProps> = ({ onSetlistCreated }) =
   const history = useHistory();
   const handleCreateSetlist = () => {
     const selectedMusics = musics.filter(m => selectedIds.includes(m.id));
-    if (setlistName && selectedMusics.length) {
+    if (selectedMusics.length) {
       const setlist: Setlist = {
         id: Date.now().toString(),
-        name: setlistName,
+        name: `Setlist ${Date.now()}`,
         musics: selectedMusics
       };
       if (onSetlistCreated) onSetlistCreated(setlist);
@@ -51,12 +50,6 @@ const SetlistSelector: React.FC<SetlistSelectorProps> = ({ onSetlistCreated }) =
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <IonLabel position="stacked">Nome da Setlist</IonLabel>
-        <IonInput
-          placeholder="Ex: Nome da Setlist"
-          value={setlistName}
-          onIonChange={e => setSetlistName(e.detail.value!)}
-        />
         <IonList>
           {musics.map(music => (
             <IonItem key={music.id}>
@@ -69,7 +62,7 @@ const SetlistSelector: React.FC<SetlistSelectorProps> = ({ onSetlistCreated }) =
             </IonItem>
           ))}
         </IonList>
-        <IonButton expand="block" onClick={handleCreateSetlist} disabled={!setlistName || !selectedIds.length}>
+        <IonButton expand="block" onClick={handleCreateSetlist} disabled={!selectedIds.length}>
           <IonIcon icon={listCircle} slot="start" />
           Criar Setlist
         </IonButton>
