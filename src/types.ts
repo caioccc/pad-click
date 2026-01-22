@@ -10,6 +10,7 @@ export interface Music {
   name: string;
   tone: Tone;
   bpm: number;
+  autoplay?: boolean;
 }
 
 export const TONES: Tone[] = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
